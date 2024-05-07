@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Global</title>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <script src="jquery-3.7.1.min.js"></script>
+        <script src="MersenneTwister19937class.js"></script>
+        <script src="turbine.js"></script>
+        <script src="app.js"></script>
+    </head>
+    <body id="body">
+        <div id="output">Global</div>
+        <div id="wheel"></div>
+        <div id="inputs">
+            <div>
+                Low<br />
+                <input type="number" id="low" value="1" />
+            </div>
+
+            <div>
+                High<br />
+                <input type="number" id="high" value="10" />
+            </div>
+
+            <div>
+                Certainty<br />
+                <input type="number" id="certainty" value="5" />
+            </div>
+        
+            <div>
+                Delay<br />
+                <input type="number" id="delay" value="100" />
+            </div>
+        </div>
+        <a id="run">3</a>
+    </body>
+</html>
