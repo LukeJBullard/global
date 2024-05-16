@@ -3,7 +3,7 @@
  * https://github.com/lukejbullard/global
  */
 
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import {
   SafeAreaView,
@@ -12,7 +12,6 @@ import {
   Text,
   ActivityIndicator,
   StyleSheet,
-  Dimensions,
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
@@ -20,13 +19,40 @@ import {
   useWindowDimensions
 } from 'react-native';
 
+import Turbine from 'turbine-js';
+
 function App(): React.JSX.Element {
   const isDarkMode = (useColorScheme() === 'dark');
 
   //io props
   const [output, setOutput] = useState("Global");
+  
+  const [loading, setLoading] = useState(false);
 
   //styling props
+  const [outputColor, setOutputColor] = useState(isDarkMode ? "#FFFFFF" : "#000000");
+  const toggleOutputColor = () => {
+    let newColor = "#AAAAAA";
+
+    switch (outputColor)
+    {
+      case "#FFFFFF":
+        newColor = "#BBBBBB";
+        break;
+      case "#BBBBBB":
+        newColor = "#FFFFFF";
+        break;
+      case "#000000":
+        newColor = "#444444"
+        break;
+      case "#444444":
+        newColor = "#000000";
+        break;
+    }
+
+    setOutputColor(newColor);
+  };
+
   const {fontScale} = useWindowDimensions();
   const styles = () => StyleSheet.create({
     body: {
@@ -43,6 +69,7 @@ function App(): React.JSX.Element {
     outputText: {
       fontSize: 50 / fontScale,
       height: "10%",
+      color: outputColor
     },
     inputView: {
       display: (loading ? 'none' : 'flex'),
@@ -81,8 +108,6 @@ function App(): React.JSX.Element {
       color: !isDarkMode ? (!loading ? "black" : "#666666") : (!loading ? "white" : "#CCCCCC")
     }
   });
-
-  const loading = false;
 
   const initialInputState : Record<string, any> = {
     low: {
@@ -148,7 +173,43 @@ function App(): React.JSX.Element {
   };
 
   const onPress3 = () => {
+    let low = parseInt(inputs.low.value);
+    let high = parseInt(inputs.high.value);
+    let certainty = parseInt(inputs.certainty.value);
+    let delay = parseInt(inputs.delay.value);
+  
+    if (low >= high ||
+      (
+        typeof(inputs.certainty.min) === 'number' &&
+        certainty < inputs.certainty.min
+      ) ||
+      (
+        typeof(inputs.certainty.max) === 'number' &&
+        certainty > inputs.certainty.max
+      ) ||
+      (
+        typeof(inputs.delay.min) === 'number' &&
+        delay < inputs.delay.min
+      )
+    )
+    {
+      return;
+    }
 
+    if (loading)
+      return;
+    setLoading(true);
+
+    var tb = new Turbine();
+    tb.waitForReady().then(() => {
+      tb
+      .query(low, high, certainty, delay)
+      .then((responseValue: number) => {
+          setOutput(responseValue.toString());
+          toggleOutputColor();
+          setLoading(false);
+      })
+    });
   };
 
   return (
