@@ -7,11 +7,13 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "copy-build": "cp android/app/build/outputs/apk/release/app-release.apk dist/Global.apk"
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.74.1"
+    "react-native": "0.74.1",
+    "turbine-js": "lukejbullard/turbine-js#8d34504"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
